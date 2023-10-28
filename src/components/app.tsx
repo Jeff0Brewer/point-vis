@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FC } from 'react'
-import '../style/App.css'
+import '../style/app.css'
 
 const App: FC = () => {
     return (
