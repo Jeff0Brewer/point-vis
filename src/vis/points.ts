@@ -1,3 +1,4 @@
+import { mat4 } from 'gl-matrix'
 import { initProgram, initBuffer, initFloatAttribute, initTexture } from '../lib/gl-wrap'
 import vertSource from '../shaders/position-vert.glsl?raw'
 import fragSource from '../shaders/position-frag.glsl?raw'
@@ -9,6 +10,8 @@ class PointRenderer {
     buffer: WebGLBuffer
     texture: WebGLTexture
     bindInds: () => void
+    setProj: (m: mat4) => void
+    setView: (m: mat4) => void
     numPoints: number
 
     constructor (gl: WebGLRenderingContext, textureSize: number) {
@@ -44,6 +47,18 @@ class PointRenderer {
         }
         this.buffer = initBuffer(gl)
         gl.bufferData(gl.ARRAY_BUFFER, vertexIndices, gl.STATIC_DRAW)
+
+        // store closures to easily set potentially changing uniforms
+        const projLoc = gl.getUniformLocation(this.program, 'proj')
+        const viewLoc = gl.getUniformLocation(this.program, 'view')
+        this.setProj = (mat: mat4): void => {
+            gl.useProgram(this.program)
+            gl.uniformMatrix4fv(projLoc, false, mat)
+        }
+        this.setView = (mat: mat4): void => {
+            gl.useProgram(this.program)
+            gl.uniformMatrix4fv(viewLoc, false, mat)
+        }
     }
 
     draw (gl: WebGLRenderingContext): void {
