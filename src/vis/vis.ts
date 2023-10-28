@@ -30,8 +30,8 @@ class VisRenderer {
         this.points.draw(this.gl)
     }
 
-    resize (canvas: HTMLCanvasElement): void {
-        const aspect = canvas.width / canvas.height
+    resize (width: number, height: number): void {
+        const aspect = width / height
         this.proj = mat4.perspective(mat4.create(), FOV, aspect, NEAR, FAR)
 
         this.points.setProj(this.proj)

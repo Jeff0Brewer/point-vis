@@ -13,13 +13,18 @@ const Vis: FC = () => {
 
     useEffect(() => {
         const fitToWindow = (): void => {
-            setWidth(window.innerWidth * window.devicePixelRatio)
-            setHeight(window.innerHeight * window.devicePixelRatio)
+            const width = window.innerWidth * window.devicePixelRatio
+            const height = window.innerHeight * window.devicePixelRatio
+
+            setWidth(width)
+            setHeight(height)
+
+            visRef.current?.resize(width, height)
         }
         // initialize canvas size
         fitToWindow()
 
-        // resize canvas when window resizes
+        // resize canvas and update projection matrices on window resize
         window.addEventListener('resize', fitToWindow)
         return () => {
             window.removeEventListener('resize', fitToWindow)
