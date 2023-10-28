@@ -10,21 +10,17 @@ const Vis: FC = () => {
     const [height, setHeight] = useState<number>(0)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const visRef = useRef<VisRenderer | null>(null)
+    const frameIdRef = useRef<number>(-1)
 
     useEffect(() => {
         const fitToWindow = (): void => {
-            const width = window.innerWidth * window.devicePixelRatio
-            const height = window.innerHeight * window.devicePixelRatio
-
-            setWidth(width)
-            setHeight(height)
-
-            visRef.current?.resize(width, height)
+            setWidth(window.innerWidth * window.devicePixelRatio)
+            setHeight(window.innerHeight * window.devicePixelRatio)
         }
         // initialize canvas size
         fitToWindow()
 
-        // resize canvas and update projection matrices on window resize
+        // resize canvas on window resize
         window.addEventListener('resize', fitToWindow)
         return () => {
             window.removeEventListener('resize', fitToWindow)
@@ -37,6 +33,26 @@ const Vis: FC = () => {
         }
         visRef.current = new VisRenderer(canvasRef.current, TEXTURE_SIZE)
     }, [])
+
+    useEffect(() => {
+        // update projection matrices on canvas resize
+        if (visRef.current) {
+            visRef.current.resize(width, height)
+        }
+    }, [width, height])
+
+    useEffect(() => {
+        const tick = (): void => {
+            if (!visRef.current) { return }
+
+            visRef.current.draw()
+            frameIdRef.current = window.requestAnimationFrame(tick)
+        }
+        frameIdRef.current = window.requestAnimationFrame(tick)
+        return () => {
+            window.cancelAnimationFrame(frameIdRef.current)
+        }
+    })
 
     return (
         <canvas

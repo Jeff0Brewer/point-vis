@@ -60,6 +60,7 @@ class PointRenderer {
             gl.uniformMatrix4fv(viewLoc, false, mat)
         }
 
+        // set static uniforms
         const textureSizeLoc = gl.getUniformLocation(this.program, 'textureSize')
         const invDecodeScaleLoc = gl.getUniformLocation(this.program, 'invDecodeScale')
         gl.uniform2f(textureSizeLoc, textureSize, textureSize)
@@ -67,6 +68,8 @@ class PointRenderer {
     }
 
     draw (gl: WebGLRenderingContext): void {
+        gl.useProgram(this.program)
+
         gl.bindTexture(gl.TEXTURE_2D, this.texture)
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
         this.bindInds()
@@ -75,12 +78,9 @@ class PointRenderer {
     }
 }
 
-const isPowerOfTwo = (x: number): boolean => {
-    return (x & (x - 1)) === 0
-}
-
 const checkTextureSize = (size: number): void => {
-    if (!isPowerOfTwo(size)) {
+    const powerOfTwo = (size & (size - 1)) === 0
+    if (!powerOfTwo) {
         throw new Error(`texture size must be power of two, recieved ${size}`)
     }
 }
