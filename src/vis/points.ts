@@ -59,6 +59,11 @@ class PointRenderer {
             gl.useProgram(this.program)
             gl.uniformMatrix4fv(viewLoc, false, mat)
         }
+
+        const textureSizeLoc = gl.getUniformLocation(this.program, 'textureSize')
+        const invDecodeScaleLoc = gl.getUniformLocation(this.program, 'invDecodeScale')
+        gl.uniform2f(textureSizeLoc, textureSize, textureSize)
+        gl.uniform1f(invDecodeScaleLoc, 1 / 4244897280) // temporary while testing random data
     }
 
     draw (gl: WebGLRenderingContext): void {
