@@ -1,24 +1,4 @@
 .app {
     position: absolute;
     inset: 0;
-
-    display: grid;
-    place-items: center;
-}
-
-.test-counter {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #000;
-    box-shadow: 0 0 8px #f0f;
-}
-
-.test-counter button {
-    background-color: #f0f;
-    border-radius: 5px;
-    padding: 5px;
 }
