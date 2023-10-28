@@ -3,6 +3,7 @@ const initGl = (canvas: HTMLCanvasElement): WebGLRenderingContext => {
     if (!gl) {
         throw new Error('WebGL context creation failed')
     }
+    gl.viewport(0, 0, canvas.width, canvas.height)
     return gl
 }
 
