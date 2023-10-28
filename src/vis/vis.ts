@@ -31,6 +31,8 @@ class VisRenderer {
     }
 
     resize (width: number, height: number): void {
+        this.gl.viewport(0, 0, width, height)
+
         const aspect = width / height
         this.proj = mat4.perspective(mat4.create(), FOV, aspect, NEAR, FAR)
 
