@@ -1,6 +1,7 @@
 type AudioAnalyzer = {
     playPause: () => void,
     getFrequencies: () => Uint8Array
+    fftSize: number
 }
 
 const getAudioAnalyzer = async (path: string): Promise<AudioAnalyzer> => {
@@ -44,7 +45,8 @@ const getAudioAnalyzer = async (path: string): Promise<AudioAnalyzer> => {
 
     return {
         playPause,
-        getFrequencies
+        getFrequencies,
+        fftSize: analyzer.fftSize
     }
 }
 
