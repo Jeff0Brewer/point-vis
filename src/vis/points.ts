@@ -1,7 +1,7 @@
 import { mat4 } from 'gl-matrix'
 import { initProgram, initBuffer, initFloatAttribute, initTexture } from '../lib/gl-wrap'
-import vertSource from '../shaders/position-vert.glsl?raw'
-import fragSource from '../shaders/position-frag.glsl?raw'
+import vertSource from '../shaders/point-vert.glsl?raw'
+import fragSource from '../shaders/point-frag.glsl?raw'
 
 const PX_PER_POS = 3
 
