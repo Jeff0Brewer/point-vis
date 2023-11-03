@@ -31,7 +31,7 @@ class VisRenderer {
 
         const aspect = canvas.width / canvas.height
         this.proj = mat4.perspective(mat4.create(), FOV, aspect, NEAR, FAR)
-        this.view = mat4.lookAt(mat4.create(), [2, 2, 2], [0, 0, 0], [0, 0, 1])
+        this.view = mat4.lookAt(mat4.create(), [2, 0, 0], [0, 0, 0], [0, 0, 1])
 
         this.points.setProj(this.proj)
         this.points.setView(this.view)

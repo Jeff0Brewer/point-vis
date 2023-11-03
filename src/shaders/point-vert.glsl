@@ -16,11 +16,10 @@ vec2 indToCoord (float ind) {
     );
 }
 
-float floatFromRgba (vec4 rgba) {
-    vec4 b = rgba * 255.0;
-    float decoded = b.a * 1.0 + b.b * 255.0 + b.g * 65025.0 + b.r * 16581375.0;
-    float normalized = (decoded * invDecodeScale) * 2.0 - 1.0; // map to range (-1, 1)
-    return normalized;
+const vec4 bitDecode = 1.0 / vec4(1.,255.,65025.,16581375.);
+float decodeFloat (vec4 rgba) {
+    float decoded = dot(rgba, bitDecode);
+    return decoded * 2.0 - 1.0; // map to range (-1, 1)
 }
 
 const float PX_PER_POS = 3.0;
@@ -31,9 +30,9 @@ void main() {
     vec4 yPixel = texture2D(positions, indToCoord(pointInd * PX_PER_POS + 1.0));
     vec4 zPixel = texture2D(positions, indToCoord(pointInd * PX_PER_POS + 2.0));
     vec4 position = vec4(
-        floatFromRgba(xPixel),
-        floatFromRgba(yPixel),
-        floatFromRgba(zPixel),
+        decodeFloat(xPixel),
+        decodeFloat(yPixel),
+        decodeFloat(zPixel),
         1.0
     );
 
