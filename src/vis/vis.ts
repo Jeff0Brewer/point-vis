@@ -45,7 +45,6 @@ class VisRenderer {
         const aspect = width / height
         this.proj = mat4.perspective(mat4.create(), FOV, aspect, NEAR, FAR)
 
-        // const frequencyTexture = this.frequency.getTexture(this.gl)
         this.points.setProj(this.proj)
     }
 }
