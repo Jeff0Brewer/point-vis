@@ -2,6 +2,7 @@ import { mat4 } from 'gl-matrix'
 import { initGl } from '../lib/gl-wrap'
 import type { AudioAnalyzer } from '../lib/audio'
 import FrequencyRenderer from '../vis/frequency'
+import PositionRenderer from '../vis/positions'
 import PointRenderer from '../vis/points'
 
 const FOV = Math.PI * 0.5
@@ -10,7 +11,8 @@ const FAR = 10
 
 class VisRenderer {
     gl: WebGLRenderingContext
-    frequency: FrequencyRenderer
+    frequencies: FrequencyRenderer
+    positions: PositionRenderer
     points: PointRenderer
     view: mat4
     proj: mat4
@@ -20,9 +22,11 @@ class VisRenderer {
         textureSize: number,
         analyzer: AudioAnalyzer
     ) {
+        checkTextureSize(textureSize)
         this.gl = initGl(canvas)
 
-        this.frequency = new FrequencyRenderer(this.gl, analyzer)
+        this.frequencies = new FrequencyRenderer(this.gl, analyzer)
+        this.positions = new PositionRenderer(this.gl, textureSize)
         this.points = new PointRenderer(this.gl, textureSize)
 
         const aspect = canvas.width / canvas.height
@@ -36,7 +40,9 @@ class VisRenderer {
     draw (): void {
         this.gl.clear(this.gl.DEPTH_BUFFER_BIT | this.gl.COLOR_BUFFER_BIT)
 
-        this.points.draw(this.gl)
+        const frequencyTexture = this.frequencies.getTexture(this.gl)
+        const positionTexture = this.positions.getTexture(this.gl, frequencyTexture)
+        this.points.draw(this.gl, positionTexture)
     }
 
     resize (width: number, height: number): void {
@@ -46,6 +52,13 @@ class VisRenderer {
         this.proj = mat4.perspective(mat4.create(), FOV, aspect, NEAR, FAR)
 
         this.points.setProj(this.proj)
+    }
+}
+
+const checkTextureSize = (size: number): void => {
+    const powerOfTwo = (size & (size - 1)) === 0
+    if (!powerOfTwo) {
+        throw new Error(`texture size must be power of two, recieved ${size}`)
     }
 }
 

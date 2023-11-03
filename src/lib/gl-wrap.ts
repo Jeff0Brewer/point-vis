@@ -112,10 +112,53 @@ const initTexture = (gl: WebGLRenderingContext): WebGLTexture => {
     return texture
 }
 
+const initTextureFramebuffer = (
+    gl: WebGLRenderingContext,
+    size: number
+): {
+    texture: WebGLTexture,
+    framebuffer: WebGLFramebuffer
+} => {
+    const texture = gl.createTexture()
+    if (!texture) {
+        throw new Error('Texture creation failed')
+    }
+
+    const framebuffer = gl.createFramebuffer()
+    if (!framebuffer) {
+        throw new Error('Framebuffer creation failed')
+    }
+
+    gl.bindTexture(gl.TEXTURE_2D, texture)
+    gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        size,
+        size,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        null
+    )
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer)
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0)
+
+    return { texture, framebuffer }
+}
+
+const FULLSCREEN_RECT = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1])
+
 export {
     initGl,
     initProgram,
     initBuffer,
     initFloatAttribute,
-    initTexture
+    initTexture,
+    initTextureFramebuffer,
+    FULLSCREEN_RECT
 }
