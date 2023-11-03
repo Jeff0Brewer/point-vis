@@ -3,12 +3,10 @@ import type { AudioAnalyzer } from '../lib/audio'
 
 class FrequencyRenderer {
     analyzer: AudioAnalyzer
-    size: number
     texture: WebGLTexture
 
     constructor (gl: WebGLRenderingContext, analyzer: AudioAnalyzer) {
         this.analyzer = analyzer
-        this.size = analyzer.fftSize
         this.texture = initTexture(gl)
     }
 
@@ -19,7 +17,7 @@ class FrequencyRenderer {
             gl.TEXTURE_2D,
             0,
             gl.LUMINANCE,
-            this.size,
+            this.analyzer.fftSize,
             1,
             0,
             gl.LUMINANCE,
