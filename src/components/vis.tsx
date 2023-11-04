@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import { useState, useEffect, useRef } from 'react'
-import type { AudioAnalyzer } from '../lib/audio'
+import AudioAnalyzer from '../lib/audio'
 import VisRenderer from '../vis/vis'
 import '../style/vis.css'
 
