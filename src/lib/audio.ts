@@ -1,59 +1,65 @@
-type AudioAnalyzer = {
-    playPause: () => void,
-    getFrequencies: () => Uint8Array
-    fftSize: number
-}
+class AudioAnalyzer {
+    sourcePath: string
+    size: number
+    ctx: AudioContext | null
+    audio: AudioBufferSourceNode | null
+    analyzer: AnalyserNode | null
+    paused: boolean
 
-const getAudioAnalyzer = async (path: string): Promise<AudioAnalyzer> => {
-    const ctx = new AudioContext()
-    const audioBuffer = await fetch(path)
-        .then(res => res.arrayBuffer())
-        .then(buf => ctx.decodeAudioData(buf))
+    constructor (sourcePath: string, size: number) {
+        this.sourcePath = sourcePath
+        this.size = size
 
-    const audio = ctx.createBufferSource()
-    audio.buffer = audioBuffer
-    audio.connect(ctx.destination)
-
-    const analyzer = ctx.createAnalyser()
-    analyzer.fftSize = 2048
-    audio.connect(analyzer)
-
-    // make closure to easily get frequency data
-    const frequencies = new Uint8Array(analyzer.fftSize)
-    const getFrequencies = (): Uint8Array => {
-        analyzer.getByteFrequencyData(frequencies)
-        return frequencies
+        // don't initialize audio until user interaction
+        this.ctx = null
+        this.audio = null
+        this.analyzer = null
+        this.paused = true
     }
 
-    // make closure to abstract audio play / pausing
-    // need to start the audioBuffer source only on first play
-    // then toggle between play and pause
-    let started = false
-    let paused = false
-    const playPause = (): void => {
-        if (!started) {
-            audio.start()
-            started = true
-        } else if (paused) {
-            ctx.resume()
-            paused = false
+    async start (): Promise<void> {
+        const ctx = new AudioContext()
+        const audioBuffer = await fetch(this.sourcePath)
+            .then(res => res.arrayBuffer())
+            .then(buf => ctx.decodeAudioData(buf))
+
+        const audio = ctx.createBufferSource()
+        audio.buffer = audioBuffer
+        audio.connect(ctx.destination)
+
+        const analyzer = ctx.createAnalyser()
+        // double size since top half of frequency data is usually empty
+        analyzer.fftSize = this.size * 2
+        audio.connect(analyzer)
+
+        audio.start()
+        this.paused = false
+
+        this.ctx = ctx
+        this.audio = audio
+        this.analyzer = analyzer
+    }
+
+    getFrequencies (): Uint8Array {
+        const freqs = new Uint8Array(this.size * 2)
+        if (this.analyzer) {
+            this.analyzer.getByteFrequencyData(freqs)
+        }
+        // slice bottom half to remove regularly empty values
+        return freqs.slice(0, this.size)
+    }
+
+    playPause (): void {
+        if (!this.ctx) {
+            this.start()
+        } else if (this.paused) {
+            this.ctx.resume()
+            this.paused = false
         } else {
-            ctx.suspend()
-            paused = true
+            this.ctx.suspend()
+            this.paused = true
         }
     }
-
-    return {
-        playPause,
-        getFrequencies,
-        fftSize: analyzer.fftSize
-    }
 }
 
-export type {
-    AudioAnalyzer
-}
-
-export {
-    getAudioAnalyzer
-}
+export default AudioAnalyzer

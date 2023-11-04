@@ -1,5 +1,5 @@
 import { initTexture } from '../lib/gl-wrap'
-import type { AudioAnalyzer } from '../lib/audio'
+import AudioAnalyzer from '../lib/audio'
 
 class FrequencyRenderer {
     analyzer: AudioAnalyzer
@@ -17,7 +17,7 @@ class FrequencyRenderer {
             gl.TEXTURE_2D,
             0,
             gl.LUMINANCE,
-            this.analyzer.fftSize,
+            this.analyzer.size,
             1,
             0,
             gl.LUMINANCE,
