@@ -5,8 +5,10 @@ uniform sampler2D frequencies;
 
 const float EPSILON = 0.01;
 
+// encodes float values in range (0, 1) to rgba bytes
 const vec4 bitEncode = vec4(1.0, 255.0, 65025.0, 16581375.0);
 vec4 encodeFloat(float value) {
+    value = value * 0.9999; // scale down to prevent errors on encoding 1.0
     vec4 encoded = bitEncode * value;
     encoded = fract(encoded);
     encoded -= encoded.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
