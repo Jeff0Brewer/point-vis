@@ -16,6 +16,8 @@ class VisRenderer {
     points: PointRenderer
     view: mat4
     proj: mat4
+    width: number
+    height: number
 
     constructor (
         canvas: HTMLCanvasElement,
@@ -31,10 +33,13 @@ class VisRenderer {
 
         const aspect = canvas.width / canvas.height
         this.proj = mat4.perspective(mat4.create(), FOV, aspect, NEAR, FAR)
-        this.view = mat4.lookAt(mat4.create(), [2, 0, 0], [0, 0, 0], [0, 0, 1])
+        this.view = mat4.lookAt(mat4.create(), [0, 1, 0], [0, 0, 0], [0, 0, 1])
 
         this.points.setProj(this.proj)
         this.points.setView(this.view)
+
+        this.width = canvas.width
+        this.height = canvas.height
     }
 
     draw (): void {
@@ -42,11 +47,12 @@ class VisRenderer {
 
         const frequencyTexture = this.frequencies.getTexture(this.gl)
         const positionTexture = this.positions.getTexture(this.gl, frequencyTexture)
-        this.points.draw(this.gl, positionTexture)
+        this.points.draw(this.gl, positionTexture, this.width, this.height)
     }
 
     resize (width: number, height: number): void {
-        this.gl.viewport(0, 0, width, height)
+        this.width = width
+        this.height = height
 
         const aspect = width / height
         this.proj = mat4.perspective(mat4.create(), FOV, aspect, NEAR, FAR)

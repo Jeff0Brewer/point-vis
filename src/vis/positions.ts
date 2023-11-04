@@ -14,6 +14,7 @@ class PositionRenderer {
     bindPosition: () => void
     framebuffer: WebGLFramebuffer
     texture: WebGLTexture
+    textureSize: number
     numVertex: number
 
     constructor (gl: WebGLRenderingContext, textureSize: number) {
@@ -28,9 +29,14 @@ class PositionRenderer {
         const { framebuffer, texture } = initTextureFramebuffer(gl, textureSize)
         this.framebuffer = framebuffer
         this.texture = texture
+
+        this.textureSize = textureSize
+        const textureSizeLoc = gl.getUniformLocation(this.program, 'texSize')
+        gl.uniform1f(textureSizeLoc, textureSize)
     }
 
     getTexture (gl: WebGLRenderingContext, frequencies: WebGLTexture): WebGLTexture {
+        gl.viewport(0, 0, this.textureSize, this.textureSize)
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
         gl.useProgram(this.program)
 

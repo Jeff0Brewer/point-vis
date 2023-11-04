@@ -40,13 +40,17 @@ class PointRenderer {
         }
 
         // set static uniforms
-        const textureSizeLoc = gl.getUniformLocation(this.program, 'textureSize')
-        const invDecodeScaleLoc = gl.getUniformLocation(this.program, 'invDecodeScale')
-        gl.uniform2f(textureSizeLoc, textureSize, textureSize)
-        gl.uniform1f(invDecodeScaleLoc, 1 / 4244897280) // temporary while testing random data
+        const textureSizeLoc = gl.getUniformLocation(this.program, 'texSize')
+        gl.uniform1f(textureSizeLoc, textureSize)
     }
 
-    draw (gl: WebGLRenderingContext, positions: WebGLTexture): void {
+    draw (
+        gl: WebGLRenderingContext,
+        positions: WebGLTexture,
+        width: number,
+        height: number
+    ): void {
+        gl.viewport(0, 0, width, height)
         gl.bindFramebuffer(gl.FRAMEBUFFER, null)
         gl.useProgram(this.program)
 
