@@ -10,7 +10,7 @@ const App: FC = () => {
 
     const playPause = (): void => {
         audio.playPause()
-        setPaused(audio.paused)
+        setPaused(!paused)
     }
 
     return (
