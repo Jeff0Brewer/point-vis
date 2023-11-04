@@ -26,6 +26,6 @@ void main() {
         gl_FragColor = encodeFloat(0.0);
     } else {
         vec4 freq = texture2D(frequencies, vec2(normInd, 0.5));
-        gl_FragColor = encodeFloat(freq.x * 0.5);
+        gl_FragColor = encodeFloat(freq.x);
     }
 }
