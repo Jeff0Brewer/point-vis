@@ -52,8 +52,8 @@ class TextureAttribRenderer {
     draw (gl: WebGLRenderingContext, sourceTextures: Array<WebGLTexture>): void {
         gl.viewport(0, 0, this.textureSize, this.textureSize)
         gl.useProgram(this.program)
-
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
+
         for (let i = 0; i < this.texAttachments.length; i++) {
             gl.activeTexture(this.texAttachments[i])
             gl.bindTexture(gl.TEXTURE_2D, sourceTextures[i])

@@ -16,6 +16,23 @@ vec4 encodeFloat(float value) {
     return encoded;
 }
 
+// decode rgba values to floats in range (0, 1)
+const vec4 bitDecode = 1.0 / bitEncode;
+float decodeFloat (vec4 rgba) {
+    float decoded = dot(rgba, bitDecode);
+    return decoded;
+}
+
+vec2 indToCoord (float ind) {
+    float row = floor(ind / texSize);
+    float col = mod(ind, texSize);
+    // add 0.5 to center coord on pixel
+    return vec2(
+        (col + 0.5) / texSize,
+        (row + 0.5) / texSize
+    );
+}
+
 void main() {
     vec2 coord = gl_FragCoord.xy - 0.5;
     float ind = coord.x + coord.y * texSize;
@@ -28,7 +45,11 @@ void main() {
     } else if (modInd < 1.0 + EPSILON) {
         gl_FragColor = encodeFloat(0.0);
     } else {
+        vec2 lastPosCoord = indToCoord(ind);
+        vec4 lastPosEncoded = texture2D(tex1, lastPosCoord);
+        float lastPos = decodeFloat(lastPosEncoded);
         vec4 freq = texture2D(tex0, vec2(normInd, 0.5));
-        gl_FragColor = encodeFloat(freq.x);
+        float zPosition = clamp(lastPos + (freq.x * 2.0 - 1.0) * 0.05, 1.0, 0.0);
+        gl_FragColor = encodeFloat(zPosition);
     }
 }
