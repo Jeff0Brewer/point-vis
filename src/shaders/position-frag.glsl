@@ -7,9 +7,10 @@ uniform sampler2D tex1; // last positions
 const float EPSILON = 0.01;
 
 // encodes float values in range (0, 1) to rgba bytes
+const float valueScale = 0.9999;
 const vec4 bitEncode = vec4(1.0, 255.0, 65025.0, 16581375.0);
 vec4 encodeFloat(float value) {
-    value = value * 0.9999; // scale down to prevent errors on encoding 1.0
+    value = value * valueScale; // scale down to prevent errors on encoding 1.0
     vec4 encoded = bitEncode * value;
     encoded = fract(encoded);
     encoded -= encoded.yzww * vec2(1.0 / 255.0, 0.0).xxxy;
@@ -18,8 +19,9 @@ vec4 encodeFloat(float value) {
 
 // decode rgba values to floats in range (0, 1)
 const vec4 bitDecode = 1.0 / bitEncode;
+const float invValueScale = 1.0 / valueScale;
 float decodeFloat (vec4 rgba) {
-    float decoded = dot(rgba, bitDecode);
+    float decoded = dot(rgba, bitDecode) * invValueScale;
     return decoded;
 }
 
