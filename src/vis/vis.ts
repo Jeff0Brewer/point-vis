@@ -5,6 +5,7 @@ import FrequencyRenderer from '../vis/frequency'
 import TexAttribRenderer from '../vis/tex-attrib'
 import PointRenderer from '../vis/points'
 import positionFrag from '../shaders/position-frag.glsl?raw'
+import positionInitFrag from '../shaders/position-init-frag.glsl?raw'
 
 const FOV = Math.PI * 0.5
 const NEAR = 0.01
@@ -38,6 +39,9 @@ class VisRenderer {
             new TexAttribRenderer(this.gl, positionFrag, textureSize, 2),
             new TexAttribRenderer(this.gl, positionFrag, textureSize, 2)
         ]
+        for (const renderer of this.positions) {
+            renderer.initTexture(this.gl, positionInitFrag)
+        }
         this.points = new PointRenderer(this.gl, textureSize)
 
         const aspect = canvas.width / canvas.height
@@ -52,8 +56,6 @@ class VisRenderer {
     }
 
     draw (): void {
-        this.gl.clear(this.gl.DEPTH_BUFFER_BIT | this.gl.COLOR_BUFFER_BIT)
-
         const frequencyTexture = this.frequencies.getTexture(this.gl)
         const lastPosTexture = this.positions[(this.currPosRenderer + 1) % 2].texture
 

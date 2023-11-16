@@ -40,16 +40,17 @@ void main() {
     float modInd = mod(ind, 3.0);
     float normInd = 3.0 * ind / (texSize * texSize);
 
+    vec2 lastPosCoord = indToCoord(ind);
+    vec4 lastPosEncoded = texture2D(tex1, lastPosCoord);
+    float lastPos = decodeFloat(lastPosEncoded);
+    float freq = texture2D(tex0, vec2(normInd, 0.5)).x;
+
     if (modInd < EPSILON) {
-        gl_FragColor = encodeFloat(normInd);
+        gl_FragColor = encodeFloat(lastPos);
     } else if (modInd < 1.0 + EPSILON) {
-        gl_FragColor = encodeFloat(0.0);
+        gl_FragColor = encodeFloat(lastPos);
     } else {
-        vec2 lastPosCoord = indToCoord(ind);
-        vec4 lastPosEncoded = texture2D(tex1, lastPosCoord);
-        float lastPos = decodeFloat(lastPosEncoded);
-        vec4 freq = texture2D(tex0, vec2(normInd, 0.5));
-        float zPosition = clamp(lastPos + (freq.x * 2.0 - 1.0) * 0.05, 1.0, 0.0);
+        float zPosition = clamp(lastPos + (freq * 2.0 - 1.0) * 0.05, 1.0, 0.0);
         gl_FragColor = encodeFloat(zPosition);
     }
 }

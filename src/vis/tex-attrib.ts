@@ -49,10 +49,26 @@ class TextureAttribRenderer {
         }
     }
 
+    initTexture (gl: WebGLRenderingContext, fragSource: string): void {
+        const program = initProgram(gl, vertSource, fragSource)
+
+        gl.viewport(0, 0, this.textureSize, this.textureSize)
+        gl.useProgram(program)
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
+        initFloatAttribute(gl, program, 'position', 2, 2, 0)
+        const textureSizeLoc = gl.getUniformLocation(program, 'texSize')
+        gl.uniform1f(textureSizeLoc, this.textureSize)
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.numVertex)
+    }
+
     draw (gl: WebGLRenderingContext, sourceTextures: Array<WebGLTexture>): void {
         gl.viewport(0, 0, this.textureSize, this.textureSize)
         gl.useProgram(this.program)
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
+        gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT)
 
         for (let i = 0; i < this.texAttachments.length; i++) {
             gl.activeTexture(this.texAttachments[i])

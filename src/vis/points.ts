@@ -53,6 +53,7 @@ class PointRenderer {
         gl.viewport(0, 0, width, height)
         gl.bindFramebuffer(gl.FRAMEBUFFER, null)
         gl.useProgram(this.program)
+        gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT)
 
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, positions)
