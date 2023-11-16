@@ -1,7 +1,7 @@
 precision highp float;
 
 uniform float texSize;
-uniform sampler2D frequencies;
+uniform sampler2D tex0; // frequencies
 
 const float EPSILON = 0.01;
 
@@ -27,7 +27,7 @@ void main() {
     } else if (modInd < 1.0 + EPSILON) {
         gl_FragColor = encodeFloat(0.0);
     } else {
-        vec4 freq = texture2D(frequencies, vec2(normInd, 0.5));
+        vec4 freq = texture2D(tex0, vec2(normInd, 0.5));
         gl_FragColor = encodeFloat(freq.x);
     }
 }

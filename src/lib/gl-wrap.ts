@@ -151,6 +151,28 @@ const initTextureFramebuffer = (
     return { texture, framebuffer }
 }
 
+const getTextureAttachments = (
+    gl: WebGLRenderingContext,
+    numTextures: number
+): Array<number> => {
+    const attachments = [
+        gl.TEXTURE0,
+        gl.TEXTURE1,
+        gl.TEXTURE2,
+        gl.TEXTURE3,
+        gl.TEXTURE4,
+        gl.TEXTURE5,
+        gl.TEXTURE6,
+        gl.TEXTURE7,
+        gl.TEXTURE8,
+        gl.TEXTURE9
+    ]
+    if (numTextures > attachments.length) {
+        throw new Error('Too many texture attachments requested')
+    }
+    return attachments.slice(0, numTextures)
+}
+
 const FULLSCREEN_RECT = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1])
 
 export {
@@ -160,5 +182,6 @@ export {
     initFloatAttribute,
     initTexture,
     initTextureFramebuffer,
+    getTextureAttachments,
     FULLSCREEN_RECT
 }

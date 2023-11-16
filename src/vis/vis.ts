@@ -30,7 +30,7 @@ class VisRenderer {
         this.gl = initGl(canvas)
 
         this.frequencies = new FrequencyRenderer(this.gl, analyzer)
-        this.positions = new TexAttribRenderer(this.gl, positionVert, positionFrag, textureSize)
+        this.positions = new TexAttribRenderer(this.gl, positionVert, positionFrag, textureSize, 1)
         this.points = new PointRenderer(this.gl, textureSize)
 
         const aspect = canvas.width / canvas.height
@@ -48,7 +48,7 @@ class VisRenderer {
         this.gl.clear(this.gl.DEPTH_BUFFER_BIT | this.gl.COLOR_BUFFER_BIT)
 
         const frequencyTexture = this.frequencies.getTexture(this.gl)
-        const positionTexture = this.positions.getTexture(this.gl, frequencyTexture)
+        const positionTexture = this.positions.getTexture(this.gl, [frequencyTexture])
         this.points.draw(this.gl, positionTexture, this.width, this.height)
     }
 

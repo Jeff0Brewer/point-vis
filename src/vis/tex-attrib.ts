@@ -3,6 +3,7 @@ import {
     initBuffer,
     initFloatAttribute,
     initTextureFramebuffer,
+    getTextureAttachments,
     FULLSCREEN_RECT
 } from '../lib/gl-wrap'
 
@@ -11,6 +12,7 @@ class TextureAttribRenderer {
     buffer: WebGLBuffer
     framebuffer: WebGLFramebuffer
     texture: WebGLTexture
+    texAttachments: Array<number>
     bindPosition: () => void
     textureSize: number
     numVertex: number
@@ -19,7 +21,8 @@ class TextureAttribRenderer {
         gl: WebGLRenderingContext,
         vertSource: string,
         fragSource: string,
-        textureSize: number
+        textureSize: number,
+        numSourceTextures: number
     ) {
         this.program = initProgram(gl, vertSource, fragSource)
 
@@ -31,19 +34,30 @@ class TextureAttribRenderer {
         this.framebuffer = framebuffer
         this.texture = texture
 
+        this.texAttachments = getTextureAttachments(gl, numSourceTextures)
+
         this.bindPosition = initFloatAttribute(gl, this.program, 'position', 2, 2, 0)
 
         this.textureSize = textureSize
         const textureSizeLoc = gl.getUniformLocation(this.program, 'texSize')
         gl.uniform1f(textureSizeLoc, textureSize)
+
+        // set texture location uniforms for each source texture
+        for (let i = 0; i < numSourceTextures; i++) {
+            const texLoc = gl.getUniformLocation(this.program, `tex${i}`)
+            gl.uniform1i(texLoc, i)
+        }
     }
 
-    getTexture (gl: WebGLRenderingContext, frequencies: WebGLTexture): WebGLTexture {
+    getTexture (gl: WebGLRenderingContext, sourceTextures: Array<WebGLTexture>): WebGLTexture {
         gl.viewport(0, 0, this.textureSize, this.textureSize)
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
         gl.useProgram(this.program)
 
-        gl.bindTexture(gl.TEXTURE_2D, frequencies)
+        for (let i = 0; i < this.texAttachments.length; i++) {
+            gl.activeTexture(this.texAttachments[i])
+            gl.bindTexture(gl.TEXTURE_2D, sourceTextures[i])
+        }
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
         this.bindPosition()
 
