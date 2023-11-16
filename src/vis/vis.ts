@@ -1,9 +1,11 @@
 import { mat4 } from 'gl-matrix'
 import { initGl } from '../lib/gl-wrap'
-import type { AudioAnalyzer } from '../lib/audio'
+import AudioAnalyzer from '../lib/audio'
 import FrequencyRenderer from '../vis/frequency'
-import PositionRenderer from '../vis/positions'
+import TexAttribRenderer from '../vis/tex-attrib'
 import PointRenderer from '../vis/points'
+import positionVert from '../shaders/position-vert.glsl?raw'
+import positionFrag from '../shaders/position-frag.glsl?raw'
 
 const FOV = Math.PI * 0.5
 const NEAR = 0.01
@@ -12,7 +14,7 @@ const FAR = 10
 class VisRenderer {
     gl: WebGLRenderingContext
     frequencies: FrequencyRenderer
-    positions: PositionRenderer
+    positions: TexAttribRenderer
     points: PointRenderer
     view: mat4
     proj: mat4
@@ -28,7 +30,7 @@ class VisRenderer {
         this.gl = initGl(canvas)
 
         this.frequencies = new FrequencyRenderer(this.gl, analyzer)
-        this.positions = new PositionRenderer(this.gl, textureSize)
+        this.positions = new TexAttribRenderer(this.gl, positionVert, positionFrag, textureSize)
         this.points = new PointRenderer(this.gl, textureSize)
 
         const aspect = canvas.width / canvas.height
