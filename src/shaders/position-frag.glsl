@@ -2,6 +2,7 @@ precision highp float;
 
 uniform float texSize;
 uniform sampler2D tex0; // frequencies
+uniform sampler2D tex1; // last positions
 
 const float EPSILON = 0.01;
 

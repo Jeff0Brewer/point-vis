@@ -49,11 +49,11 @@ class TextureAttribRenderer {
         }
     }
 
-    getTexture (gl: WebGLRenderingContext, sourceTextures: Array<WebGLTexture>): WebGLTexture {
+    draw (gl: WebGLRenderingContext, sourceTextures: Array<WebGLTexture>): void {
         gl.viewport(0, 0, this.textureSize, this.textureSize)
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
         gl.useProgram(this.program)
 
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
         for (let i = 0; i < this.texAttachments.length; i++) {
             gl.activeTexture(this.texAttachments[i])
             gl.bindTexture(gl.TEXTURE_2D, sourceTextures[i])
@@ -62,8 +62,6 @@ class TextureAttribRenderer {
         this.bindPosition()
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.numVertex)
-
-        return this.texture
     }
 }
 

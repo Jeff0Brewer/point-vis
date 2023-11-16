@@ -13,7 +13,8 @@ const FAR = 10
 class VisRenderer {
     gl: WebGLRenderingContext
     frequencies: FrequencyRenderer
-    positions: TexAttribRenderer
+    positions: [TexAttribRenderer, TexAttribRenderer]
+    currPosRenderer: number
     points: PointRenderer
     view: mat4
     proj: mat4
@@ -29,7 +30,14 @@ class VisRenderer {
         this.gl = initGl(canvas)
 
         this.frequencies = new FrequencyRenderer(this.gl, analyzer)
-        this.positions = new TexAttribRenderer(this.gl, positionFrag, textureSize, 1)
+
+        // two position renderers so position calc can reference current
+        // position texture from other renderer
+        this.currPosRenderer = 0
+        this.positions = [
+            new TexAttribRenderer(this.gl, positionFrag, textureSize, 2),
+            new TexAttribRenderer(this.gl, positionFrag, textureSize, 2)
+        ]
         this.points = new PointRenderer(this.gl, textureSize)
 
         const aspect = canvas.width / canvas.height
@@ -47,8 +55,16 @@ class VisRenderer {
         this.gl.clear(this.gl.DEPTH_BUFFER_BIT | this.gl.COLOR_BUFFER_BIT)
 
         const frequencyTexture = this.frequencies.getTexture(this.gl)
-        const positionTexture = this.positions.getTexture(this.gl, [frequencyTexture])
-        this.points.draw(this.gl, positionTexture, this.width, this.height)
+        const lastPosTexture = this.positions[(this.currPosRenderer + 1) % 2].texture
+
+        this.positions[this.currPosRenderer].draw(this.gl, [frequencyTexture, lastPosTexture])
+        const currPosTexture = this.positions[this.currPosRenderer].texture
+
+        // toggle between position rederers on each draw to access last
+        // position texture from previous renderer
+        this.currPosRenderer = (this.currPosRenderer + 1) % 2
+
+        this.points.draw(this.gl, currPosTexture, this.width, this.height)
     }
 
     resize (width: number, height: number): void {

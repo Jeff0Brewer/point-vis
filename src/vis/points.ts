@@ -54,6 +54,7 @@ class PointRenderer {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null)
         gl.useProgram(this.program)
 
+        gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, positions)
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
         this.bindInds()
