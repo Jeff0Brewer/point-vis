@@ -4,7 +4,6 @@ import AudioAnalyzer from '../lib/audio'
 import FrequencyRenderer from '../vis/frequency'
 import TexAttribRenderer from '../vis/tex-attrib'
 import PointRenderer from '../vis/points'
-import positionVert from '../shaders/position-vert.glsl?raw'
 import positionFrag from '../shaders/position-frag.glsl?raw'
 
 const FOV = Math.PI * 0.5
@@ -30,7 +29,7 @@ class VisRenderer {
         this.gl = initGl(canvas)
 
         this.frequencies = new FrequencyRenderer(this.gl, analyzer)
-        this.positions = new TexAttribRenderer(this.gl, positionVert, positionFrag, textureSize, 1)
+        this.positions = new TexAttribRenderer(this.gl, positionFrag, textureSize, 1)
         this.points = new PointRenderer(this.gl, textureSize)
 
         const aspect = canvas.width / canvas.height

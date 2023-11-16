@@ -6,6 +6,7 @@ import {
     getTextureAttachments,
     FULLSCREEN_RECT
 } from '../lib/gl-wrap'
+import vertSource from '../shaders/tex-attrib-vert.glsl?raw'
 
 class TextureAttribRenderer {
     program: WebGLProgram
@@ -19,7 +20,6 @@ class TextureAttribRenderer {
 
     constructor (
         gl: WebGLRenderingContext,
-        vertSource: string,
         fragSource: string,
         textureSize: number,
         numSourceTextures: number
