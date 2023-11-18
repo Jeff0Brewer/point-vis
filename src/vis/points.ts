@@ -42,11 +42,17 @@ class PointRenderer {
         // set static uniforms
         const textureSizeLoc = gl.getUniformLocation(this.program, 'texSize')
         gl.uniform1f(textureSizeLoc, textureSize)
+
+        const posTextureLoc = gl.getUniformLocation(this.program, 'positions')
+        const freqTextureLoc = gl.getUniformLocation(this.program, 'frequencies')
+        gl.uniform1i(posTextureLoc, 0)
+        gl.uniform1i(freqTextureLoc, 1)
     }
 
     draw (
         gl: WebGLRenderingContext,
         positions: WebGLTexture,
+        frequencies: WebGLTexture,
         width: number,
         height: number
     ): void {
@@ -57,6 +63,10 @@ class PointRenderer {
 
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, positions)
+
+        gl.activeTexture(gl.TEXTURE1)
+        gl.bindTexture(gl.TEXTURE_2D, frequencies)
+
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
         this.bindInds()
 

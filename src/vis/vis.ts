@@ -29,6 +29,7 @@ class VisRenderer {
     ) {
         checkTextureSize(textureSize)
         this.gl = initGl(canvas)
+        this.gl.enable(this.gl.DEPTH_TEST)
 
         this.frequencies = new FrequencyRenderer(this.gl, analyzer)
 
@@ -39,10 +40,11 @@ class VisRenderer {
             new TexAttribRenderer(this.gl, positionFrag, textureSize, 2),
             new TexAttribRenderer(this.gl, positionFrag, textureSize, 2)
         ]
+        this.points = new PointRenderer(this.gl, textureSize)
+
         for (const renderer of this.positions) {
             renderer.initTexture(this.gl, positionInitFrag)
         }
-        this.points = new PointRenderer(this.gl, textureSize)
 
         const aspect = canvas.width / canvas.height
         this.proj = mat4.perspective(mat4.create(), FOV, aspect, NEAR, FAR)
@@ -66,7 +68,7 @@ class VisRenderer {
         // position texture from previous renderer
         this.currPosRenderer = (this.currPosRenderer + 1) % 2
 
-        this.points.draw(this.gl, currPosTexture, this.width, this.height)
+        this.points.draw(this.gl, currPosTexture, frequencyTexture, this.width, this.height)
     }
 
     resize (width: number, height: number): void {
