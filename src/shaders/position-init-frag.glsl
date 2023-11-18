@@ -3,6 +3,8 @@ precision highp float;
 uniform float texSize;
 
 const float EPSILON = 0.01;
+const float NUM_ROTATE = 1.0;
+const float PI = 3.14159;
 
 // encodes float values in range (0, 1) to rgba bytes
 const vec4 bitEncode = vec4(1.0, 255.0, 65025.0, 16581375.0);
@@ -17,18 +19,18 @@ vec4 encodeFloat(float value) {
 void main() {
     vec2 coord = gl_FragCoord.xy - 0.5;
     float ind = coord.x + coord.y * texSize;
+    float maxInd = texSize * texSize / 3.0;
 
-    float modInd = mod(ind, 3.0);
-    float pointInd = floor(ind / 3.0);
+    float angle = ind / maxInd * NUM_ROTATE * PI * 2.0 + PI * 0.5;
 
-    if (modInd < EPSILON) {
-        float xPosition = mod(pointInd, 1000.0) / 1000.0;
-        gl_FragColor = encodeFloat(xPosition);
-    } else if (modInd < 1.0 + EPSILON) {
-        float numPoints = (texSize * texSize) / 3.0;
-        float yPosition = pointInd / numPoints;
-        gl_FragColor = encodeFloat(yPosition);
+    float xyz = mod(ind, 3.0);
+    float pos = 0.0;
+    if (xyz < 1.0 - EPSILON) {
+        pos = (cos(angle) + 1.0) * 0.5;
+    } else if (xyz < 2.0 - EPSILON) {
+        pos = 0.0;
     } else {
-        gl_FragColor = encodeFloat(0.0);
+        pos = (sin(angle) + 1.0) * 0.5;
     }
+    gl_FragColor = encodeFloat(pos);
 }

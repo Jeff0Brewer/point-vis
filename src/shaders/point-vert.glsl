@@ -30,7 +30,7 @@ void main() {
     vec4 zPixel = texture2D(positions, indToCoord(pointInd * PX_PER_POS + 2.0));
     vec4 position = vec4(
         decodeFloat(xPixel),
-        decodeFloat(yPixel),
+        decodeFloat(yPixel) * 15.0,
         decodeFloat(zPixel),
         1.0
     );

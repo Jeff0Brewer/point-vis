@@ -45,14 +45,15 @@ void main() {
     vec2 lastPosCoord = indToCoord(ind);
     vec4 lastPosEncoded = texture2D(tex1, lastPosCoord);
     float lastPos = decodeFloat(lastPosEncoded);
-    float freq = texture2D(tex0, vec2(normInd, 0.5)).x;
 
     if (modInd < EPSILON) {
         gl_FragColor = encodeFloat(lastPos);
     } else if (modInd < 1.0 + EPSILON) {
-        gl_FragColor = encodeFloat(lastPos);
+        float mirroredInd = abs(normInd - 0.5) * 2.0;
+        float freq = texture2D(tex0, vec2(mirroredInd, 0.5)).x;
+        float yPosition = mod(max(lastPos + pow(freq, 0.5) * 0.04 - 0.01, 0.0), 1.0);
+        gl_FragColor = encodeFloat(yPosition);
     } else {
-        float zPosition = clamp(lastPos + (freq * 2.0 - 1.0) * 0.05, 1.0, 0.0);
-        gl_FragColor = encodeFloat(zPosition);
+        gl_FragColor = encodeFloat(lastPos);
     }
 }

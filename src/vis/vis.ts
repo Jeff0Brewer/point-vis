@@ -9,7 +9,7 @@ import positionInitFrag from '../shaders/position-init-frag.glsl?raw'
 
 const FOV = Math.PI * 0.5
 const NEAR = 0.01
-const FAR = 10
+const FAR = 100
 
 class VisRenderer {
     gl: WebGLRenderingContext
