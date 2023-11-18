@@ -5,7 +5,7 @@ import '../style/app.css'
 
 const App: FC = () => {
     // don't need audio setter until song change functionality added
-    const [audio] = useState<AudioAnalyzer>(new AudioAnalyzer('song.mp3', 2048))
+    const [audio] = useState<AudioAnalyzer>(new AudioAnalyzer('song.mp3', 4096))
     const [paused, setPaused] = useState<boolean>(true)
 
     const playPause = (): void => {
