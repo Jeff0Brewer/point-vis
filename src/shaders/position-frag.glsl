@@ -51,7 +51,7 @@ void main() {
     } else if (modInd < 1.0 + EPSILON) {
         float mirroredInd = abs(normInd - 0.5) * 2.0;
         float freq = texture2D(tex0, vec2(mirroredInd, 0.5)).x;
-        float yPosition = mod(max(lastPos + pow(freq, 0.5) * 0.04 - 0.01, 0.0), 1.0);
+        float yPosition = mod(max(0.0, lastPos + freq * 0.01), 1.0);
         gl_FragColor = encodeFloat(yPosition);
     } else {
         gl_FragColor = encodeFloat(lastPos);
