@@ -3,7 +3,7 @@ precision highp float;
 uniform float texSize;
 
 const float EPSILON = 0.01;
-const float NUM_ROTATE = 4.0;
+const float NUM_ROTATE = 10.0;
 const float PI = 3.14159;
 
 // encodes float values in range (0, 1) to rgba bytes
@@ -27,14 +27,15 @@ void main() {
         noise * 0.15 -
         PI * 0.5;
 
+    float radius = 1.0 - (ind / maxInd) * 0.05;
     float xyz = mod(ind, 3.0);
     float pos = 0.0;
     if (xyz < 1.0 - EPSILON) {
-        pos = cos(angle) * 0.5 + 0.5;
+        pos = radius * (cos(angle) * 0.5 + 0.5);
     } else if (xyz < 2.0 - EPSILON) {
         pos = 0.0;
     } else {
-        pos = sin(angle) * 0.5 + 0.5;
+        pos = radius * (sin(angle) * 0.5 + 0.5);
     }
     gl_FragColor = encodeFloat(pos);
 }
