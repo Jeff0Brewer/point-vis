@@ -47,6 +47,9 @@ class PointRenderer {
         const freqTextureLoc = gl.getUniformLocation(this.program, 'frequencies')
         gl.uniform1i(posTextureLoc, 0)
         gl.uniform1i(freqTextureLoc, 1)
+
+        const dprLoc = gl.getUniformLocation(this.program, 'dpr')
+        gl.uniform1f(dprLoc, window.devicePixelRatio)
     }
 
     draw (

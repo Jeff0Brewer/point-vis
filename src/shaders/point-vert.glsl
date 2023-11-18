@@ -3,6 +3,7 @@ attribute float vertexInd;
 uniform mat4 view;
 uniform mat4 proj;
 uniform float texSize;
+uniform float dpr;
 uniform sampler2D positions;
 uniform sampler2D frequencies;
 
@@ -31,7 +32,7 @@ vec3 colorMap(float x) {
 }
 
 float shadeMap(float x) {
-    return pow(x, 0.25) * 0.5 + 0.5;
+    return pow(x, 0.3) * 0.5 + 0.5;
 }
 
 void main() {
@@ -45,10 +46,11 @@ void main() {
         decodeFloat(zPixel),
         1.0
     );
-
     gl_Position = proj * view * position;
 
     float normInd = vertexInd / (texSize * texSize);
     float freq = texture2D(frequencies, vec2(normInd, 0.5)).x;
     color = vec4(colorMap(normInd) * shadeMap(freq), 1.0);
+
+    gl_PointSize = 3.0 * dpr / gl_Position.w;
 }
