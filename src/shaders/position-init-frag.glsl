@@ -24,18 +24,21 @@ void main() {
     float noise = sin(ind * 0.01) + sin(ind * 0.001);
     float angle =
         ind / maxInd * NUM_ROTATE * PI * 2.0 +
-        noise * 0.15 +
+        noise * 0.1 -
         PI * 0.5;
 
-    float radius = 1.0 - (ind / maxInd) * 0.05;
+    float normInd = ind / maxInd;
+    float mirrorInd = abs(normInd - 0.5) * 2.0;
+
+    float radius = .95 + .05 * mirrorInd;
     float xyz = mod(ind, 3.0);
     float pos = 0.0;
     if (xyz < 1.0 - EPSILON) {
-        pos = radius * (cos(angle) * 0.5 + 0.5);
+        pos = (radius * cos(angle) + 1.0) * 0.5;
     } else if (xyz < 2.0 - EPSILON) {
         pos = 0.0;
     } else {
-        pos = radius * (sin(angle) * 0.5 + 0.5);
+        pos = (radius * sin(angle) + 1.0) * 0.5;
     }
     gl_FragColor = encodeFloat(pos);
 }

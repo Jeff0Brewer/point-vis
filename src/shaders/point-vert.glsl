@@ -7,7 +7,8 @@ uniform float dpr;
 uniform sampler2D positions;
 uniform sampler2D frequencies;
 
-varying vec4 color;
+varying vec3 color;
+varying vec3 position;
 
 const float PX_PER_POS = 3.0;
 
@@ -28,7 +29,7 @@ vec2 indToCoord (float ind) {
 }
 
 vec3 colorMap(float x) {
-    return vec3(mod(x, 0.1) * 10.0, mod(x, 0.01) * 100.0, mod(x, 0.001) * 1000.0);
+    return normalize(vec3(mod(x, 0.1) * 10.0, mod(x, 0.01) * 100.0, mod(x, 0.001) * 1000.0));
 }
 
 float shadeMap(float x) {
@@ -40,17 +41,17 @@ void main() {
     vec4 xPixel = texture2D(positions, indToCoord(ind * PX_PER_POS));
     vec4 yPixel = texture2D(positions, indToCoord(ind * PX_PER_POS + 1.0));
     vec4 zPixel = texture2D(positions, indToCoord(ind * PX_PER_POS + 2.0));
-    vec4 position = vec4(
+    position = vec3(
         decodeFloat(xPixel),
         decodeFloat(yPixel) * 6.0 - 5.0,
-        decodeFloat(zPixel),
-        1.0
+        decodeFloat(zPixel)
     );
-    gl_Position = proj * view * position;
+    gl_Position = proj * view * vec4(position, 1.0);
 
-    float normInd = vertexInd / (texSize * texSize);
-    float freq = texture2D(frequencies, vec2(normInd, 0.5)).x;
-    color = vec4(colorMap(normInd) * shadeMap(freq), 1.0);
+    float normInd = vertexInd / (texSize * texSize / 3.0);
+    float mirroredInd = abs(normInd - 0.5) * 2.0;
+    float freq = texture2D(frequencies, vec2(mirroredInd, 0.5)).x;
+    color = colorMap(normInd) * shadeMap(freq);
 
-    gl_PointSize = 3.0 * dpr / gl_Position.w;
+    gl_PointSize = (30.0 * pow(freq, 5.0) + 5.0)* dpr / gl_Position.w;
 }
