@@ -3,7 +3,7 @@ precision highp float;
 uniform float texSize;
 
 const float EPSILON = 0.01;
-const float NUM_ROTATE = 10.0;
+const float NUM_ROTATE = 8.0;
 const float PI = 3.14159;
 
 // encodes float values in range (0, 1) to rgba bytes
@@ -24,7 +24,7 @@ void main() {
     float noise = sin(ind * 0.01) + sin(ind * 0.001);
     float angle =
         ind / maxInd * NUM_ROTATE * PI * 2.0 +
-        noise * 0.15 -
+        noise * 0.15 +
         PI * 0.5;
 
     float radius = 1.0 - (ind / maxInd) * 0.05;
