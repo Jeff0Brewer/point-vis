@@ -29,8 +29,8 @@ void main() {
 
     float normInd = ind / maxInd;
     float mirrorInd = abs(normInd - 0.5) * 2.0;
+    float radius = 0.9 + 0.1 * mirrorInd;
 
-    float radius = .95 + .05 * mirrorInd;
     float xyz = mod(ind, 3.0);
     float pos = 0.0;
     if (xyz < 1.0 - EPSILON) {

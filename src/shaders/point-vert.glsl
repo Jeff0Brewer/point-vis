@@ -33,7 +33,7 @@ vec3 colorMap(float x) {
 }
 
 float shadeMap(float x) {
-    return pow(x, 0.3) * 0.8 + 0.4;
+    return pow(max(x * 1.3, 1.0), 0.3) * 0.7 + 0.4;
 }
 
 void main() {
