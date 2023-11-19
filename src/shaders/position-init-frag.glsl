@@ -3,7 +3,7 @@ precision highp float;
 uniform float texSize;
 
 const float EPSILON = 0.01;
-const float NUM_ROTATE = 8.0;
+const float NUM_ROTATE = 6.0;
 const float PI = 3.14159;
 
 // encodes float values in range (0, 1) to rgba bytes

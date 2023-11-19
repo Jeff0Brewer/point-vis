@@ -49,10 +49,10 @@ void main() {
     if (modInd < EPSILON) {
         gl_FragColor = encodeFloat(lastPos);
     } else if (modInd < 1.0 + EPSILON) {
-        float mirroredInd = abs(normInd - 0.5) * 2.0;
+        float mirroredInd = pow(abs(normInd - 0.5) * 2.0, 1.2);
         float freq = texture2D(tex0, vec2(mirroredInd, 0.5)).x;
-        float lastShifted = mod(lastPos + pow(freq, 1.9) * 0.015, 1.0);
-        float yPosition = lastShifted * 0.99 + freq * 0.01;
+        float lastShifted = mod(lastPos + pow(freq, 2.0) * 0.015, 1.0);
+        float yPosition = lastShifted * 0.99 + min(freq, 0.5) * 0.01;
         gl_FragColor = encodeFloat(yPosition);
     } else {
         gl_FragColor = encodeFloat(lastPos);

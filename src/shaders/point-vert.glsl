@@ -33,7 +33,7 @@ vec3 colorMap(float x) {
 }
 
 float shadeMap(float x) {
-    return pow(max(x * 1.3, 1.0), 0.3) * 0.7 + 0.4;
+    return pow(x, 0.3) * 0.7 + 0.4;
 }
 
 void main() {
@@ -49,7 +49,7 @@ void main() {
     gl_Position = proj * view * vec4(position, 1.0);
 
     float normInd = vertexInd / (texSize * texSize / 3.0);
-    float mirroredInd = abs(normInd - 0.5) * 2.0;
+    float mirroredInd = pow(abs(normInd - 0.5) * 2.0, 1.2);
     float freq = texture2D(frequencies, vec2(mirroredInd, 0.5)).x;
     color = colorMap(normInd) * shadeMap(freq);
 
